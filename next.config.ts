@@ -1,12 +1,16 @@
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
+const nextConfig = {
   env: {
     NEXT_PUBLIC_THIRDWEB_CLIENT_ID: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
     THIRDWEB_SECRET_KEY: process.env.THIRDWEB_SECRET_KEY,
   },
   images: {
-    domains: ['ipfs.io'], // ✅ necesario para mostrar imágenes IPFS
+    // Añade el dominio completo que thirdweb usa internamente
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.ipfscdn.io', // acepta todos los subdominios del gateway de thirdweb
+      },
+    ],
   },
 };
 
