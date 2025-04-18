@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const resolveIPFS = (url?: string) => {
+export const resolveIPFS = async (url?: string) => {
   if (!url) return '';
-  return resolveScheme({ uri: url, client }); // ✅ forma correcta: objeto con ambas props
+  return resolveScheme({ uri: url, client });
 };
