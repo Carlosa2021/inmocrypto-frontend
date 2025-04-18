@@ -55,9 +55,11 @@ export default function MarketplacePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {listings.map((listing) => (
               <NFTCard
-                key={listing.id.toString()}
-                tokenId={listing.tokenId}
+                key={listing.id}
+                tokenId={BigInt(listing.tokenId)}
                 contract={nftCollectionContract}
+                price={listing.currencyValuePerToken.displayValue}
+                currency={listing.currencyValuePerToken.symbol}
               />
             ))}
           </div>

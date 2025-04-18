@@ -1,14 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { NFTProvider, NFTMedia, NFTName } from 'thirdweb/react';
+import { NFTProvider, NFTMedia, NFTName, NFTDescription } from 'thirdweb/react';
 import { Card, CardContent } from '@/components/ui/card';
-import type { Contract } from 'thirdweb';
-import type { BigNumberish } from 'ethers';
+import type { ThirdwebContract } from 'thirdweb';
 
 interface NFTCardProps {
-  tokenId: BigNumberish;
-  contract: Contract;
+  tokenId: bigint;
+  contract: ThirdwebContract;
 }
 
 export const NFTCard = ({ tokenId, contract }: NFTCardProps) => {
@@ -27,6 +26,9 @@ export const NFTCard = ({ tokenId, contract }: NFTCardProps) => {
           </div>
           <CardContent className="p-4">
             <NFTName className="text-lg font-semibold mb-1 truncate" />
+            <br />
+            <NFTDescription className="text-base text-gray-600 truncate" />
+            {/* TODO: aquí puedes añadir el precio más adelante */}
           </CardContent>
         </Card>
       </NFTProvider>
