@@ -7,10 +7,11 @@ import { marketplaceContract, nftCollectionContract } from '@/lib/contracts';
 import { NFTCard } from '@/components/ui/NFTCard';
 import { Button } from '@/components/ui/button';
 import ConnectWallet from '@/components/ConnectWallet';
+import type { DirectListing } from 'thirdweb/extensions/marketplace';
 
 export default function MarketplacePage() {
   const router = useRouter();
-  const [listings, setListings] = useState<any[]>([]);
+  const [listings, setListings] = useState<DirectListing[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,10 +19,10 @@ export default function MarketplacePage() {
       try {
         const data = await getAllListings({
           contract: marketplaceContract,
-          start: 0n,
+          start: 0,
           count: 20n,
         });
-        setListings(data);
+        setListings(data as DirectListing[]);
       } catch (err) {
         console.error('Error fetching listings:', err);
       } finally {
@@ -55,11 +56,11 @@ export default function MarketplacePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {listings.map((listing) => (
               <NFTCard
-                key={listing.id}
-                tokenId={BigInt(listing.tokenId)}
+                key={listing.id.toString()}
+                listingId={Number(listing.id)}
+                tokenId={Number(listing.tokenId)}
                 contract={nftCollectionContract}
-                price={listing.currencyValuePerToken.displayValue}
-                currency={listing.currencyValuePerToken.symbol}
+                price={`${listing.currencyValuePerToken.displayValue} ${listing.currencyValuePerToken.symbol}`}
               />
             ))}
           </div>
