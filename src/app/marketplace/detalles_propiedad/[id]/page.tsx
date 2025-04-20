@@ -8,8 +8,6 @@ import {
   NFTName,
   NFTDescription,
 } from 'thirdweb/react';
-import { polygon } from 'thirdweb/chains';
-import { client } from '@/lib/thirdweb/client-browser';
 import { nftCollectionContract, marketplaceContract } from '@/lib/contracts';
 import { useState, useEffect } from 'react';
 import { BuyModal } from '@/components/ui/BuyModal'; // Ajusta el path según tu estructura y nombre
@@ -39,7 +37,7 @@ export default function PropertyPage() {
   const { data: listingRaw, isLoading } = useReadContract({
     contract: marketplaceContract,
     method,
-    params: tokenId !== undefined ? [tokenId] : undefined,
+    params: listingId !== undefined ? [listingId] : [0n], // Nunca array vacío
   });
 
   const validListing =
@@ -56,10 +54,11 @@ export default function PropertyPage() {
     ? (listingRaw.listingId as bigint)
     : undefined;
 
+  // Hook de lectura de tokenURI: params siempre de longitud 1
   const { data: tokenUriRaw } = useReadContract({
     contract: nftCollectionContract,
     method: 'tokenURI',
-    params: tokenId !== undefined ? [tokenId] : [],
+    params: [tokenId ?? 0n] as [bigint], // Siempre un array length 1
   });
   const [metadata, setMetadata] = useState<NFTMetadata | null>(null);
   useEffect(() => {

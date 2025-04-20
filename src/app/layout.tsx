@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ThirdwebProvider } from 'thirdweb/react';
-import { client } from '@/lib/thirdweb/client';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -21,17 +20,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThirdwebProvider client={client} activeChain="polygon">
-          {children}
-        </ThirdwebProvider>
+        <ThirdwebProvider>{children}</ThirdwebProvider>
       </body>
     </html>
   );
