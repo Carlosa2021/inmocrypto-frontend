@@ -39,7 +39,7 @@ export default function PropertyPage() {
   const { data: listingRaw, isLoading } = useReadContract({
     contract: marketplaceContract,
     method,
-    params: listingId !== undefined ? [listingId] : [],
+    params: tokenId !== undefined ? [tokenId] : undefined,
   });
 
   const validListing =
@@ -64,9 +64,9 @@ export default function PropertyPage() {
   const [metadata, setMetadata] = useState<NFTMetadata | null>(null);
   useEffect(() => {
     if (!tokenUriRaw || typeof tokenUriRaw !== 'string') return;
-    const uri = tokenUriRaw.startsWith('ipfs://')
-      ? tokenUriRaw.replace('ipfs://', 'https://ipfs.io/ipfs/')
-      : tokenUriRaw;
+    const uri = (tokenUriRaw as string).startsWith('ipfs://')
+      ? (tokenUriRaw as string).replace('ipfs://', 'https://ipfs.io/ipfs/')
+      : (tokenUriRaw as string);
     fetch(uri)
       .then((res) => res.json())
       .then(setMetadata)
