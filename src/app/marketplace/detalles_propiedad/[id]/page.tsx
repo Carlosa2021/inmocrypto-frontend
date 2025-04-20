@@ -7,12 +7,13 @@ import {
   NFTMedia,
   NFTName,
   NFTDescription,
-  BuyDirectListingButton,
 } from 'thirdweb/react';
 import { polygon } from 'thirdweb/chains';
 import { client } from '@/lib/thirdweb/client-browser';
 import { nftCollectionContract, marketplaceContract } from '@/lib/contracts';
 import { useState, useEffect } from 'react';
+import { BuyModal } from '@/components/ui/BuyModal'; // Ajusta el path según tu estructura y nombre
+import { Button } from '@/components/ui/button';
 
 interface NFTMetadata {
   [key: string]: unknown;
@@ -32,7 +33,6 @@ export default function PropertyPage() {
     listingId = stringId ? BigInt(stringId) : undefined;
   } catch {}
 
-  // ABI string real para thirdweb/react
   const method =
     'function getListing(uint256 _listingId) view returns ((uint256 listingId, uint256 tokenId, uint256 quantity, uint256 pricePerToken, uint128 startTimestamp, uint128 endTimestamp, address listingCreator, address assetContract, address currency, uint8 tokenType, uint8 status, bool reserved) listing)';
 
@@ -42,7 +42,6 @@ export default function PropertyPage() {
     params: listingId !== undefined ? [listingId] : [],
   });
 
-  // Chequeo de estructura: listingRaw es un objeto con las claves del resultado
   const validListing =
     listingRaw &&
     typeof listingRaw === 'object' &&
@@ -57,7 +56,6 @@ export default function PropertyPage() {
     ? (listingRaw.listingId as bigint)
     : undefined;
 
-  // tokenURI y metadata
   const { data: tokenUriRaw } = useReadContract({
     contract: nftCollectionContract,
     method: 'tokenURI',
@@ -74,6 +72,9 @@ export default function PropertyPage() {
       .then(setMetadata)
       .catch(() => setMetadata(null));
   }, [tokenUriRaw]);
+
+  // Estado para BuyModal
+  const [open, setOpen] = useState(false);
 
   if (!stringId || listingId === undefined)
     return <p>Propiedad no encontrada.</p>;
@@ -131,15 +132,18 @@ export default function PropertyPage() {
                   ))}
               </div>
             )}
-            <BuyDirectListingButton
-              contractAddress={marketplaceContract.address}
-              listingId={detailListingId!}
-              quantity={1n}
-              client={client}
-              chain={polygon}
+            <Button
+              onClick={() => setOpen(true)}
+              className="mt-6 w-full text-lg"
             >
               Comprar
-            </BuyDirectListingButton>
+            </Button>
+            <BuyModal
+              open={open}
+              onClose={() => setOpen(false)}
+              listingId={detailListingId!}
+              pricePerToken={pricePerToken!}
+            />
           </div>
         </div>
       </NFTProvider>
