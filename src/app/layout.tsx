@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ThirdwebProvider } from 'thirdweb/react';
-import ConnectWallet from '@/components/ConnectWallet';
+// import ConnectWallet from '@/components/ConnectWallet';
+import { Navbar } from '@/components/Navbar';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,15 +31,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThirdwebProvider>
+          <Navbar />
           <header
             style={{
               display: 'flex',
               justifyContent: 'flex-end',
               padding: '1rem',
             }}
-          >
-            <ConnectWallet />
-          </header>
+          ></header>
           {children}
         </ThirdwebProvider>
       </body>
