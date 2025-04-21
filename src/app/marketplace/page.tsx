@@ -1,16 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { getAllListings } from 'thirdweb/extensions/marketplace';
 import { marketplaceContract, nftCollectionContract } from '@/lib/contracts';
 import { NFTCard } from '@/components/ui/NFTCard';
-import { Button } from '@/components/ui/button';
-import ConnectWallet from '@/components/ConnectWallet';
 import type { DirectListing } from 'thirdweb/extensions/marketplace';
 
 export default function MarketplacePage() {
-  const router = useRouter();
+  // const router = useRouter();
   const [listings, setListings] = useState<DirectListing[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,12 +38,7 @@ export default function MarketplacePage() {
           Compra tu nueva casa con criptomonedas
         </h1>
         <p className="text-lg mt-2">Recibe el vendedor euros automáticamente</p>
-        <div className="mt-6 flex flex-col items-center gap-4">
-          <Button size="lg" onClick={() => router.push('/marketplace')}>
-            Explorar Propiedades
-          </Button>
-          <ConnectWallet />
-        </div>
+        <div className="mt-6 flex flex-col items-center gap-4"></div>
       </section>
 
       <section className="max-w-7xl mx-auto mt-12 px-4">

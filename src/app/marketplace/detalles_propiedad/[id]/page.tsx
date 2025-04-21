@@ -10,8 +10,11 @@ import {
 } from 'thirdweb/react';
 import { nftCollectionContract, marketplaceContract } from '@/lib/contracts';
 import { useState, useEffect } from 'react';
-import { BuyModal } from '@/components/ui/BuyModal'; // Ajusta el path según tu estructura y nombre
-import { Button } from '@/components/ui/button';
+// import { BuyModal } from '@/components/ui/BuyModal';
+// import { Button } from '@/components/ui/button';
+import { BuyDirectListingButton } from 'thirdweb/react';
+import { polygon } from 'thirdweb/chains';
+import { client } from '@/lib/thirdweb/client-browser';
 
 interface NFTMetadata {
   [key: string]: unknown;
@@ -37,7 +40,7 @@ export default function PropertyPage() {
   const { data: listingRaw, isLoading } = useReadContract({
     contract: marketplaceContract,
     method,
-    params: listingId !== undefined ? [listingId] : [0n], // Nunca array vacío
+    params: listingId !== undefined ? [listingId] : [0n], // Siempre params length 1
   });
 
   const validListing =
@@ -45,7 +48,8 @@ export default function PropertyPage() {
     typeof listingRaw === 'object' &&
     'listingId' in listingRaw &&
     'tokenId' in listingRaw &&
-    'pricePerToken' in listingRaw;
+    'pricePerToken' in listingRaw &&
+    'currency' in listingRaw;
   const tokenId = validListing ? (listingRaw.tokenId as bigint) : undefined;
   const pricePerToken = validListing
     ? (listingRaw.pricePerToken as bigint)
@@ -53,12 +57,12 @@ export default function PropertyPage() {
   const detailListingId = validListing
     ? (listingRaw.listingId as bigint)
     : undefined;
+  // const currency = validListing ? (listingRaw.currency as string) : '';
 
-  // Hook de lectura de tokenURI: params siempre de longitud 1
   const { data: tokenUriRaw } = useReadContract({
     contract: nftCollectionContract,
     method: 'tokenURI',
-    params: [tokenId ?? 0n] as [bigint], // Siempre un array length 1
+    params: [tokenId ?? 0n] as [bigint],
   });
   const [metadata, setMetadata] = useState<NFTMetadata | null>(null);
   useEffect(() => {
@@ -73,7 +77,7 @@ export default function PropertyPage() {
   }, [tokenUriRaw]);
 
   // Estado para BuyModal
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
   if (!stringId || listingId === undefined)
     return <p>Propiedad no encontrada.</p>;
@@ -131,18 +135,19 @@ export default function PropertyPage() {
                   ))}
               </div>
             )}
-            <Button
-              onClick={() => setOpen(true)}
-              className="mt-6 w-full text-lg"
+            <BuyDirectListingButton
+              contractAddress="0x3fD5B4F1058416ea6BEeAc7dd3b239DD014a07a6"
+              listingId={detailListingId!}
+              quantity={1n}
+              client={client}
+              chain={polygon}
+              onTransactionConfirmed={() =>
+                alert('¡Compra realizada con éxito!')
+              }
+              onError={(err) => alert('Error en la compra: ' + err.message)}
             >
               Comprar
-            </Button>
-            <BuyModal
-              open={open}
-              onClose={() => setOpen(false)}
-              listingId={detailListingId!}
-              pricePerToken={pricePerToken!}
-            />
+            </BuyDirectListingButton>
           </div>
         </div>
       </NFTProvider>

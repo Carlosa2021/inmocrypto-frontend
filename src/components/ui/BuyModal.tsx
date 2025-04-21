@@ -1,46 +1,16 @@
+import { BuyDirectListingButton } from 'thirdweb/react';
+import { polygon } from 'thirdweb/chains';
+import { client } from '@/lib/thirdweb/client-browser';
 import { Button } from '@/components/ui/button';
-import { useSendTransaction, useActiveAccount } from 'thirdweb/react';
-import { marketplaceContract } from '@/lib/contracts';
-import { prepareContractCall } from 'thirdweb';
 
 interface BuyModalProps {
   open: boolean;
   onClose: () => void;
   listingId: string | number | bigint;
-  pricePerToken: string | number | bigint;
+  // No necesitas price ni currency para el botón universal
 }
 
-export const BuyModal = ({
-  open,
-  onClose,
-  listingId,
-  pricePerToken,
-}: BuyModalProps) => {
-  const account = useActiveAccount();
-  const { mutate: buyNow, isPending: isBuying } = useSendTransaction();
-
-  const handleBuy = () => {
-    // Convierte todo a tipo bigint si hace falta
-    const idParam =
-      typeof listingId === 'bigint' ? listingId : BigInt(listingId);
-    const priceParam =
-      typeof pricePerToken === 'bigint' ? pricePerToken : BigInt(pricePerToken);
-
-    const tx = prepareContractCall({
-      contract: marketplaceContract,
-      method:
-        'function buyFromListing(uint256 _listingId, address _buyFor, uint256 _quantity, address _currency, uint256 _expectedTotalPrice) payable',
-      params: [
-        idParam, // Listing ID (bigint)
-        account?.address || '', // Comprador
-        1n, // cantidad (1 por defecto)
-        '0x0000000000000000000000000000000000000000', // POLYGON/MATIC native
-        priceParam, // Precio esperado en wei (bigint)
-      ],
-    });
-    buyNow(tx);
-  };
-
+export const BuyModal = ({ open, onClose, listingId }: BuyModalProps) => {
   if (!open) return null;
   return (
     <div
@@ -68,10 +38,24 @@ export const BuyModal = ({
       >
         <h2>Confirmar Compra</h2>
         <p>¿Deseas comprar esta propiedad?</p>
-        <Button disabled={isBuying} onClick={handleBuy}>
-          {isBuying ? 'Comprando...' : 'Confirmar compra'}
-        </Button>
-        <Button variant="ghost" onClick={onClose}>
+        <BuyDirectListingButton
+          contractAddress={'0x3fD5B4F1058416ea6BEeAc7dd3b239DD014a07a6'}
+          listingId={
+            typeof listingId === 'bigint' ? listingId : BigInt(listingId)
+          }
+          quantity={1n}
+          // Asegúrate de importar client y polygon según tu proyecto
+          client={client}
+          chain={polygon}
+          onTransactionConfirmed={() => {
+            alert('¡Compra realizada con éxito!');
+            onClose();
+          }}
+          onError={(err) => alert('Error en la compra: ' + err.message)}
+        >
+          Confirmar compra
+        </BuyDirectListingButton>
+        <Button variant="ghost" onClick={onClose} style={{ marginTop: 12 }}>
           Cancelar
         </Button>
       </div>
