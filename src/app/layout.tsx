@@ -2,14 +2,12 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ThirdwebProvider } from 'thirdweb/react';
-// import ConnectWallet from '@/components/ConnectWallet';
 import { Navbar } from '@/components/Navbar';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 });
-
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
@@ -25,6 +23,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Si quieres manejar dark/light global, usa una librería tipo next-themes,
+  // o props/className simples:
+  // const [isDarkMode, setIsDarkMode] = useState(false);
+  // <html lang="es" className={isDarkMode ? 'dark' : ''}>
   return (
     <html lang="es">
       <body
@@ -32,13 +34,7 @@ export default function RootLayout({
       >
         <ThirdwebProvider>
           <Navbar />
-          <header
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              padding: '1rem',
-            }}
-          ></header>
+          <header className="flex justify-end p-4 bg-transparent" />
           {children}
         </ThirdwebProvider>
       </body>
