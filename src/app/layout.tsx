@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ThirdwebProvider } from 'thirdweb/react';
+import { ThemeProvider } from 'next-themes';
 import { Navbar } from '@/components/Navbar';
+import type { ReactNode } from 'react';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -18,25 +20,19 @@ export const metadata: Metadata = {
   description: 'Tokenización de inmuebles con Web3 y Thirdweb',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  // Si quieres manejar dark/light global, usa una librería tipo next-themes,
-  // o props/className simples:
-  // const [isDarkMode, setIsDarkMode] = useState(false);
-  // <html lang="es" className={isDarkMode ? 'dark' : ''}>
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThirdwebProvider>
-          <Navbar />
-          <header className="flex justify-end p-4 bg-transparent" />
-          {children}
-        </ThirdwebProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThirdwebProvider>
+            <Navbar />
+            <header className="flex justify-end p-4 bg-transparent" />
+            {children}
+          </ThirdwebProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
