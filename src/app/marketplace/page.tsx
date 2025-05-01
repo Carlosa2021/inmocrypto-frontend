@@ -29,10 +29,9 @@ export default function MarketplacePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Banner Hero super atractivo para inversores */}
-      <section className="relative overflow-hidden min-h-[380px] md:min-h-[420px] px-4 sm:px-10 py-16 flex flex-col justify-center items-center bg-gradient-to-br from-blue-800 via-indigo-700 to-purple-700 text-white shadow-xl rounded-b-3xl">
-        {/* Imagen decorativa background y glassmorphism */}
+    <div className="flex flex-col bg-background text-foreground">
+      {/* Banner Hero */}
+      <section className="relative overflow-hidden min-h-[380px] md:min-h-[420px] px-4 sm:px-10 py-16 flex flex-col justify-center items-center bg-gradient-to-br from-blue-800 via-indigo-700 to-purple-700 text-white shadow-xl rounded-3xl">
         <div className="absolute inset-0 z-0">
           <img
             src="https://ipfs.io/ipfs/QmXbLGHKb4KYYq2Tzz3AYnt2ZfuAg3ykqfsPco7JriwKBN"
@@ -68,12 +67,15 @@ export default function MarketplacePage() {
       </section>
 
       {/* Sección de propiedades en venta */}
-      <section className="max-w-7xl mx-auto mt-12 px-4" id="marketplace">
-        <h2 className="text-2xl font-semibold mb-6">Propiedades en venta</h2>
+      <section className="max-w-7xl mx-auto mt-20 px-4 py-10 bg-white dark:bg-zinc-900 shadow-xl rounded-3xl flex-1">
+        <h2 className="text-3xl font-bold mb-8 text-center text-zinc-800 dark:text-white">
+          Propiedades en venta
+        </h2>
+
         {loading ? (
-          <p>Cargando listados...</p>
+          <p className="text-center text-gray-500">Cargando listados...</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {listings.map((listing) => (
               <NFTCard
                 key={listing.id.toString()}
