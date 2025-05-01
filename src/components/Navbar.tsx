@@ -3,9 +3,12 @@
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import ConnectWallet from '@/components/ConnectWallet';
+import { useState, useEffect } from 'react';
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
     <nav className="backdrop-blur sticky top-0 z-30 w-full py-3 px-2 md:px-10 bg-white/80 dark:bg-zinc-900/70 border-b dark:border-zinc-800 shadow-sm dark:shadow-none transition-colors">
@@ -53,7 +56,7 @@ export function Navbar() {
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             className="rounded-full p-2 border dark:border-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition shadow"
           >
-            {theme === 'dark' ? '🌙' : '☀️'}
+            {mounted ? (theme === 'dark' ? '🌙' : '☀️') : null}
           </button>
           {/* Botón cuenta (ya muestra dirección y saldo) */}
           <ConnectWallet theme={theme} />
