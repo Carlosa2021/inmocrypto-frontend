@@ -4,7 +4,6 @@ import './globals.css';
 import { ThirdwebProvider } from 'thirdweb/react';
 import { ThemeProvider } from 'next-themes';
 import { Navbar } from '@/components/Navbar';
-import { Sidebar } from '@/components/Sidebar';
 import { Footer } from '@/components/Footer';
 import type { ReactNode } from 'react';
 
@@ -30,18 +29,23 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ThirdwebProvider>
-            {/* Contenedor principal del layout */}
-            <div className="flex flex-col min-h-screen">
-              {/* Navbar en la parte superior */}
+            {/* Envolvemos todo el layout en overflow-x-hidden para evitar scroll horizontal */}
+            <div className="flex flex-col min-h-screen w-full overflow-x-hidden">
+              {/* Navbar fijo */}
               <Navbar />
-              <div className="mt-6 flex flex-1">
-                {/* Sidebar en la parte izquierda */}
-                <Sidebar />
-                {/* Contenido principal */}
-                <main className="flex-1 p-4 overflow-auto">{children}</main>
-              </div>
+
+              {/* Contenido principal */}
+              <main className="flex-1 w-full max-w-screen-xl mx-auto px-4 md:px-8 py-8">
+                {children}
+              </main>
+
+              {/* Footer también centrado y con padding */}
+              <footer className="w-full border-t mt-12">
+                <div className="max-w-screen-xl mx-auto px-4 md:px-8 py-6">
+                  <Footer />
+                </div>
+              </footer>
             </div>
-            <Footer />
           </ThirdwebProvider>
         </ThemeProvider>
       </body>

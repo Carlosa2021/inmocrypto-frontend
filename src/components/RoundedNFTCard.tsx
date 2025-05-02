@@ -2,34 +2,34 @@
 
 import { useRouter } from 'next/navigation';
 import { NFTProvider, NFTMedia, NFTName, NFTDescription } from 'thirdweb/react';
-import { Card, CardContent } from '@/components/ui/card';
 import type { ThirdwebContract } from 'thirdweb';
+import { Card, CardContent } from '@/components/ui/card';
 
-export interface NFTCardProps {
+export interface RoundedNFTCardProps {
   listingId: number;
   tokenId: number;
   contract: ThirdwebContract;
   price: string;
 }
 
-export const NFTCard = ({
+export const RoundedNFTCard = ({
   listingId,
   tokenId,
   contract,
   price,
-}: NFTCardProps) => {
+}: RoundedNFTCardProps) => {
   const router = useRouter();
 
-  const handleClick = () => {
-    router.push(`/marketplace/detalles_propiedad/${listingId}`);
-  };
-
   return (
-    <div onClick={handleClick} className="cursor-pointer">
+    <div
+      onClick={() =>
+        router.push(`/marketplace/detalles_propiedad/${listingId}`)
+      }
+      className="cursor-pointer"
+    >
       <NFTProvider contract={contract} tokenId={BigInt(tokenId)}>
         <Card className="transition-transform hover:scale-105 rounded-2xl shadow-lg overflow-hidden bg-white dark:bg-zinc-900">
-          {/* Imagen con redondeo funcional */}
-          <div className="w-full h-60 md:h-full ">
+          <div className="w-full h-60 md:h-full">
             <NFTMedia className="w-full h-full object-cover rounded-xl" />
           </div>
 

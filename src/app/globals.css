@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -79,7 +79,7 @@
 }
 
 .dark {
-  --background: oklch(0.141 0.005 285.823);
+  --background: oklch(0.22 0.01 280);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.21 0.006 285.885);
   --card-foreground: oklch(0.985 0 0);
@@ -119,4 +119,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.nft-img-rounded :global(img) {
+  border-radius: 1rem; /* Equivalente a rounded-2xl */
 }

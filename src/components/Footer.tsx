@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="w-full mt-20 bg-gradient-to-r from-indigo-950 via-blue-900 to-fuchsia-900 dark:from-zinc-900 dark:via-zinc-950 dark:to-zinc-900 text-white dark:text-zinc-300 py-4 px-6 mx-4 rounded-2xl shadow-lg">
+    <footer className="w-full mt-20 bg-gradient-to-r from-indigo-950 via-blue-900 to-fuchsia-900 dark:from-zinc-900 dark:via-zinc-950 dark:to-zinc-900 text-white dark:text-zinc-300 py-4 px-6 rounded-2xl shadow-lg">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Logo y marca */}
         <div className="flex items-center gap-2">
