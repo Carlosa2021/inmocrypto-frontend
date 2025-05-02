@@ -9,6 +9,7 @@ const nextConfig = {
     domains: [
       'ipfscdn.io',
       '0034bb8a0404643d26c534ffe3c6b710.ipfscdn.io', // ← tu subdominio exacto
+      'ipfs.io', // ← AÑADE ESTE
     ],
     remotePatterns: [
       {
