@@ -5,6 +5,7 @@ import { getAllListings } from 'thirdweb/extensions/marketplace';
 import { marketplaceContract, nftCollectionContract } from '@/lib/contracts';
 import { NFTCard } from '@/components/ui/NFTCard';
 import type { DirectListing } from 'thirdweb/extensions/marketplace';
+import Image from 'next/image';
 
 export default function MarketplacePage() {
   const [listings, setListings] = useState<DirectListing[]>([]);
@@ -33,7 +34,7 @@ export default function MarketplacePage() {
       {/* Banner Hero */}
       <section className="relative overflow-hidden min-h-[380px] md:min-h-[420px] px-4 sm:px-10 py-16 flex flex-col justify-center items-center bg-gradient-to-br from-blue-800 via-indigo-700 to-purple-700 text-white shadow-xl rounded-3xl">
         <div className="absolute inset-0 z-0">
-          <img
+          <Image
             src="https://ipfs.io/ipfs/QmXbLGHKb4KYYq2Tzz3AYnt2ZfuAg3ykqfsPco7JriwKBN"
             alt="Banner inversión web3"
             className="w-full h-full object-cover opacity-70 blur-sm scale-105"

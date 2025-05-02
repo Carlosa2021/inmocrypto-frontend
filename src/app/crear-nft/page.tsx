@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { useActiveAccount } from 'thirdweb/react';
-import { mintTo } from 'thirdweb/extensions/erc721'; // O usa extensions/erc1155 si tu colección lo es
+import { mintTo } from 'thirdweb/extensions/erc721';
 import { sendTransaction } from 'thirdweb';
-import { nftCollectionContract } from '@/lib/contracts'; // Ajusta import según tu estructura
-// import { client } from '@/lib/thirdweb/client-browser';
+import { nftCollectionContract } from '@/lib/contracts';
 
 export default function CrearNFTPage() {
   const account = useActiveAccount();
@@ -28,19 +27,13 @@ export default function CrearNFTPage() {
     }
     setLoading(true);
     try {
-      // Prepara metadata para IPFS
       const imageFile = new File([image], image.name, {
         type: image.type,
       });
-      // thirdweb/extensions/erc721 mintTo acepta el objeto de imagen directamente
       const tx = mintTo({
         contract: nftCollectionContract,
         to: account.address,
-        nft: {
-          name,
-          description,
-          image: imageFile,
-        },
+        nft: { name, description, image: imageFile },
       });
       const txResult = await sendTransaction({
         transaction: tx,
@@ -52,8 +45,9 @@ export default function CrearNFTPage() {
       setName('');
       setDescription('');
       setImage(null);
-    } catch (err: any) {
-      setFeedback('Error al mintear: ' + (err?.message || String(err)));
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setFeedback('Error al mintear: ' + msg);
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-'use client';
+/* 'use client';
 
 import { useRouter } from 'next/navigation';
 import { NFTProvider, NFTMedia, NFTName, NFTDescription } from 'thirdweb/react';
@@ -52,3 +52,4 @@ export const RoundedNFTCard = ({
     </div>
   );
 };
+*/

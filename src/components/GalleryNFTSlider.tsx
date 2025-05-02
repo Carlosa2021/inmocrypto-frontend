@@ -1,6 +1,6 @@
-'use client';
+/* 'use client';
 
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 import { NFTProvider, NFTMedia, NFTName, NFTDescription } from 'thirdweb/react';
 import type { ThirdwebContract } from 'thirdweb';
 import { Card, CardContent } from '@/components/ui/card';
@@ -58,3 +58,4 @@ export default function GalleryNFTSlider({ nfts }: GallerySliderProps) {
     </div>
   );
 }
+*/

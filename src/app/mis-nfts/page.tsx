@@ -2,16 +2,20 @@
 
 import { useActiveAccount } from 'thirdweb/react';
 import { getOwnedNFTs } from 'thirdweb/extensions/erc721';
-// import { getOwnedNFTs as getOwnedNFTs1155 } from 'thirdweb/extensions/erc1155';
 import { useEffect, useState } from 'react';
 import { NFTProvider, NFTMedia, NFTName, NFTDescription } from 'thirdweb/react';
 import { Card, CardContent } from '@/components/ui/card';
-// import { client } from '@/lib/thirdweb/client-browser';
-import { nftCollectionContract } from '@/lib/contracts'; // Asegúrate de tener bien importado tu contrato
+import { nftCollectionContract } from '@/lib/contracts';
+
+// Ajusta el tipo según la estructura real de tu contrato/NFT
+interface OwnedNFT {
+  id: bigint;
+  // Si necesitas más campos, agrégalos aquí.
+}
 
 export default function MisNFTsPage() {
   const account = useActiveAccount();
-  const [nfts, setNfts] = useState<any[]>([]);
+  const [nfts, setNfts] = useState<OwnedNFT[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,14 +27,11 @@ export default function MisNFTsPage() {
       }
       setLoading(true);
       try {
-        // ERC721 & compatible
         const nfts721 = await getOwnedNFTs({
           contract: nftCollectionContract,
           owner: account.address,
         });
-        // ERC1155 (si tienes colección 1155, añade aquí más contratos si los usas)
-        // const nfts1155 = await getOwnedNFTs1155({ contract: tuERC1155Contract, address: account.address, start: 0, count: 24n });
-        setNfts(nfts721 /* .concat(nfts1155) si tienes ambos tipos */);
+        setNfts(nfts721);
       } catch (err) {
         console.error('Error al obtener NFTs:', err);
         setNfts([]);
@@ -38,7 +39,8 @@ export default function MisNFTsPage() {
       setLoading(false);
     };
     fetchNFTs();
-  }, [account?.address, nftCollectionContract]);
+    // Elimina 'nftCollectionContract' del array de dependencias, sólo deja variables primitivas
+  }, [account?.address]);
 
   return (
     <div className="min-h-screen bg-background text-foreground px-4 py-8">
@@ -47,7 +49,7 @@ export default function MisNFTsPage() {
         <div className="text-lg mt-12 text-gray-500">Cargando tus NFTs...</div>
       ) : nfts.length === 0 ? (
         <div className="mt-16 text-center text-xl font-semibold text-muted-foreground">
-          No tienes NFTs en esta wallet <br />{' '}
+          No tienes NFTs en esta wallet <br />
           <span className="text-base font-normal">
             (Asegúrate de estar en la red correcta y con la wallet conectada)
           </span>
@@ -67,7 +69,6 @@ export default function MisNFTsPage() {
                 <CardContent className="p-4 flex flex-col gap-2">
                   <NFTName className="text-lg font-bold truncate text-foreground" />
                   <NFTDescription className="text-xs text-muted-foreground line-clamp-2" />
-                  {/* Puedes agregar más info, como supply, owner, etc. */}
                 </CardContent>
               </Card>
             </NFTProvider>

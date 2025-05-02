@@ -56,6 +56,7 @@ export default function PropertyPage() {
     ? (listingRaw.listingId as bigint)
     : undefined;
 
+  // NO genéricos, el hook ya infiere (y forzamos comprobación en el efecto)
   const { data: tokenUriRaw } = useReadContract({
     contract: nftCollectionContract,
     method: 'tokenURI',
@@ -63,11 +64,12 @@ export default function PropertyPage() {
   });
 
   const [metadata, setMetadata] = useState<NFTMetadata | null>(null);
+
   useEffect(() => {
-    if (!tokenUriRaw || typeof tokenUriRaw !== 'string') return;
-    const uri = tokenUriRaw.startsWith('ipfs://')
-      ? tokenUriRaw.replace('ipfs://', 'https://ipfs.io/ipfs/')
-      : tokenUriRaw;
+    if (!tokenUriRaw) return;
+    const uri = String(tokenUriRaw).startsWith('ipfs://')
+      ? String(tokenUriRaw).replace('ipfs://', 'https://ipfs.io/ipfs/')
+      : String(tokenUriRaw);
     fetch(uri)
       .then((res) => res.json())
       .then(setMetadata)
