@@ -5,7 +5,7 @@ import { getAllListings } from 'thirdweb/extensions/marketplace';
 import { marketplaceContract, nftCollectionContract } from '@/lib/contracts';
 import { NFTCard } from '@/components/ui/NFTCard';
 import type { DirectListing } from 'thirdweb/extensions/marketplace';
-import Image from 'next/image';
+// import Image from 'next/image';
 
 export default function MarketplacePage() {
   const [listings, setListings] = useState<DirectListing[]>([]);
@@ -34,7 +34,7 @@ export default function MarketplacePage() {
       {/* Banner Hero */}
       <section className="relative overflow-hidden min-h-[380px] md:min-h-[420px] px-4 sm:px-10 py-16 flex flex-col justify-center items-center bg-gradient-to-br from-blue-800 via-indigo-700 to-purple-700 text-white shadow-xl rounded-3xl">
         <div className="absolute inset-0 z-0">
-          <Image
+          <img
             src="https://ipfs.io/ipfs/QmXbLGHKb4KYYq2Tzz3AYnt2ZfuAg3ykqfsPco7JriwKBN"
             alt="Banner inversión web3"
             className="w-full h-full object-cover opacity-70 blur-sm scale-105"
@@ -68,7 +68,10 @@ export default function MarketplacePage() {
       </section>
 
       {/* Sección de propiedades en venta */}
-      <section className="max-w-7xl mx-auto mt-20 px-4 py-10 bg-white dark:bg-zinc-900 shadow-xl rounded-3xl flex-1">
+      <section
+        id="listings"
+        className="max-w-7xl mx-auto mt-20 px-4 py-10 bg-white dark:bg-zinc-900 shadow-xl rounded-3xl flex-1"
+      >
         <h2 className="text-3xl font-bold mb-8 text-center text-zinc-800 dark:text-white">
           Propiedades en venta
         </h2>
