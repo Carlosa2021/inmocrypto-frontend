@@ -5,20 +5,12 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 const NAV_LINKS = [
-  {
-    label: 'Marketplace',
-    href: '/marketplace',
-    color: 'indigo',
-  },
+  { label: 'Marketplace', href: '/marketplace', color: 'indigo' },
   { label: 'Mis NFTs', href: '/mis-nfts', color: 'orange' },
   { label: 'Crear NFT', href: '/crear-nft', color: 'blue' },
   { label: 'Admin', href: '/admin', color: 'red' },
   { label: 'Whitelist', href: '/whitelist', color: 'teal' },
-  {
-    label: 'Estadísticas',
-    href: '/estadisticas',
-    color: 'violet',
-  },
+  { label: 'Estadísticas', href: '/estadisticas', color: 'violet' },
   { label: 'Perfil', href: '/perfil', color: 'yellow' },
   { label: 'Ayuda & FAQ', href: '/faq', color: 'cyan' },
 ];
@@ -60,12 +52,12 @@ export function Sidebar() {
         aria-hidden={!open}
       >
         <aside
-          className={`absolute left-0 top-0 h-full w-[260px] bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 shadow-xl transform transition-transform ${
+          className={`absolute left-0 top-0 h-full w-[240px] bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 shadow-xl transform transition-transform rounded-r-2xl ${
             open ? 'translate-x-0' : '-translate-x-full'
           }`}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-200 dark:border-zinc-800">
+          <div className="flex items-center justify-between px-4 py-4 border-b border-zinc-200 dark:border-zinc-800">
             <span className="font-bold text-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
               ChainX
             </span>
@@ -106,7 +98,7 @@ export function Sidebar() {
       </div>
 
       {/* Sidebar normal desktop */}
-      <aside className="hidden md:flex flex-col min-h-screen w-[260px] bg-white/90 dark:bg-zinc-900/90 border-r border-zinc-200 dark:border-zinc-800 shadow-xl px-5 py-8 gap-6 sticky top-0 z-20">
+      <aside className="hidden md:flex flex-col min-h-[calc(100vh-2rem)] mt-4 mx-4 w-[240px] bg-white/90 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 shadow-xl px-4 py-6 gap-6 sticky top-4 z-20 rounded-2xl">
         <span className="font-black text-2xl pb-5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent text-center tracking-tight">
           ChainX
         </span>

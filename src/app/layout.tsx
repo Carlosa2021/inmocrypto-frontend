@@ -34,7 +34,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <div className="flex flex-col min-h-screen">
               {/* Navbar en la parte superior */}
               <Navbar />
-              <div className="flex flex-1">
+              <div className="mt-6 flex flex-1">
                 {/* Sidebar en la parte izquierda */}
                 <Sidebar />
                 {/* Contenido principal */}
