@@ -9,19 +9,23 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**.ipfscdn.io',
+        hostname: 'ipfs.io',
+        pathname: '/ipfs/**',
       },
       {
         protocol: 'https',
-        hostname: '**.ipfs.io',
+        hostname: 'ipfscdn.io',
+        pathname: '/ipfs/**',
       },
       {
         protocol: 'https',
-        hostname: '**.nftstorage.link',
+        hostname: 'nftstorage.link',
+        pathname: '/ipfs/**',
       },
       {
         protocol: 'https',
-        hostname: '**.gateway.pinata.cloud',
+        hostname: 'gateway.pinata.cloud',
+        pathname: '/ipfs/**',
       },
     ],
   },
