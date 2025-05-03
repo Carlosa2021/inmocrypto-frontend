@@ -6,6 +6,11 @@ import type { ThirdwebContract } from 'thirdweb';
 import { useEffect, useState } from 'react';
 import { client } from '@/lib/thirdweb/client-browser';
 
+function resolveIPFS(uri: string): string {
+  if (!uri) return '';
+  return uri.replace(/^ipfs:\/\//, 'https://ipfs.thirdwebcdn.com/ipfs/');
+}
+
 interface Props {
   contract: ThirdwebContract;
   tokenId: number | bigint;
@@ -20,7 +25,7 @@ export const IPFSNFTMedia = ({ contract, tokenId, className = '' }: Props) => {
       try {
         const nft = await getNFT({ contract, tokenId: BigInt(tokenId) });
         const image = nft.metadata?.image || '';
-        setIpfsUrl(image); // deja el ipfs:// tal como viene
+        setIpfsUrl(resolveIPFS(image));
       } catch (err) {
         console.error('Error al cargar metadata del NFT', err);
         setIpfsUrl(null);
