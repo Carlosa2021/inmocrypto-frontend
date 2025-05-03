@@ -12,27 +12,36 @@ interface Props {
   className?: string;
 }
 
+// ✅ Función para convertir ipfs:// a URL accesible
+const resolveIPFS = (url: string) => {
+  if (!url) return '';
+  return url.startsWith('ipfs://')
+    ? url.replace('ipfs://', 'https://ipfs.io/ipfs/')
+    : url;
+};
+
 export const IPFSNFTMedia = ({ contract, tokenId, className = '' }: Props) => {
-  const [ipfsUrl, setIpfsUrl] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMetadata = async () => {
       try {
         const nft = await getNFT({ contract, tokenId: BigInt(tokenId) });
-        const image = nft.metadata?.image || '';
-        setIpfsUrl(image); // deja el ipfs:// tal como viene
+        const rawImage = nft.metadata?.image || '';
+        const resolved = resolveIPFS(rawImage);
+        setImageUrl(resolved);
       } catch (err) {
         console.error('Error al cargar metadata del NFT', err);
-        setIpfsUrl(null);
+        setImageUrl(null);
       }
     };
 
     fetchMetadata();
   }, [contract, tokenId]);
 
-  if (!ipfsUrl) {
+  if (!imageUrl) {
     return <p className="text-sm text-red-500">No se pudo cargar la imagen</p>;
   }
 
-  return <MediaRenderer client={client} src={ipfsUrl} className={className} />;
+  return <MediaRenderer client={client} src={imageUrl} className={className} />;
 };
