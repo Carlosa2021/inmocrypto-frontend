@@ -20,10 +20,9 @@ export const IPFSNFTMedia = ({ contract, tokenId, className = '' }: Props) => {
       try {
         const nft = await getNFT({ contract, tokenId: BigInt(tokenId) });
         const ipfsImage = nft.metadata?.image || '';
-        const resolvedUrl = ipfsImage.replace(
-          'ipfs://',
-          'https://ipfscdn.io/ipfs/',
-        );
+        const resolvedUrl = `https://ipfscdn.io/ipfs/${encodeURIComponent(
+          ipfsImage.replace('ipfs://', ''),
+        )}`;
 
         setImageUrl(resolvedUrl);
       } catch (err) {

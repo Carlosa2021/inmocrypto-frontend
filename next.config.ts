@@ -6,11 +6,6 @@ const nextConfig = {
     THIRDWEB_SECRET_KEY: process.env.THIRDWEB_SECRET_KEY,
   },
   images: {
-    domains: [
-      'ipfscdn.io', // Thirdweb CDN (principal)
-      'nftstorage.link', // NFT.Storage (opcional)
-      'gateway.pinata.cloud', // Pinata (opcional)
-    ],
     remotePatterns: [
       {
         protocol: 'https',
