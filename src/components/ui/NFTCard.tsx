@@ -30,7 +30,6 @@ export const NFTCard = ({
 
   useEffect(() => {
     const fetchMetadata = async () => {
-      if (!contract) return;
       try {
         const nft = await getNFT({ contract, tokenId: BigInt(tokenId) });
         setName(nft.metadata?.name || 'Sin nombre');
@@ -56,13 +55,20 @@ export const NFTCard = ({
 
         <CardContent className="p-4">
           <p className="text-lg font-semibold mb-1 text-zinc-800 dark:text-zinc-100 truncate">
-            {name || 'Cargando...'}
+            {name}
           </p>
-          <p className="text-sm text-zinc-600 dark:text-zinc-300 line-clamp-2">
-            {description || 'Cargando descripción...'}
+          <p
+            className="text-sm text-zinc-600 dark:text-zinc-300 line-clamp-2"
+            style={{
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}
+          >
+            {description}
           </p>
           <p className="text-sm font-semibold mt-3 text-indigo-700 dark:text-indigo-300">
-            Precio: {price || 'No disponible'}
+            Precio: {price}
           </p>
         </CardContent>
       </Card>
