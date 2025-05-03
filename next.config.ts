@@ -10,22 +10,18 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: '**.ipfscdn.io',
-        pathname: '/ipfs/**',
       },
       {
         protocol: 'https',
         hostname: '**.ipfs.io',
-        pathname: '/ipfs/**',
       },
       {
         protocol: 'https',
         hostname: '**.nftstorage.link',
-        pathname: '/ipfs/**',
       },
       {
         protocol: 'https',
-        hostname: '**.pinata.cloud',
-        pathname: '/ipfs/**',
+        hostname: '**.gateway.pinata.cloud',
       },
     ],
   },

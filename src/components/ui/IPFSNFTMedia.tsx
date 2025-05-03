@@ -1,10 +1,9 @@
 'use client';
 
-import { MediaRenderer } from 'thirdweb/react';
+import Image from 'next/image';
 import { getNFT } from 'thirdweb/extensions/erc721';
 import type { ThirdwebContract } from 'thirdweb';
 import { useEffect, useState } from 'react';
-import { client } from '@/lib/thirdweb/client-browser'; // ajusta esta ruta si es diferente
 
 interface Props {
   contract: ThirdwebContract;
@@ -20,6 +19,8 @@ export const IPFSNFTMedia = ({ contract, tokenId, className = '' }: Props) => {
       try {
         const nft = await getNFT({ contract, tokenId: BigInt(tokenId) });
         const ipfsImage = nft.metadata?.image || '';
+
+        // Cambia ipfs://... por https://ipfscdn.io/ipfs/...
         const resolvedUrl = `https://ipfscdn.io/ipfs/${encodeURIComponent(
           ipfsImage.replace('ipfs://', ''),
         )}`;
@@ -38,5 +39,14 @@ export const IPFSNFTMedia = ({ contract, tokenId, className = '' }: Props) => {
     return <p className="text-sm text-red-500">No se pudo cargar la imagen</p>;
   }
 
-  return <MediaRenderer client={client} src={imageUrl} className={className} />;
+  return (
+    <Image
+      src={imageUrl}
+      alt={`NFT ${tokenId}`}
+      width={600}
+      height={400}
+      className={className}
+      unoptimized // importante para evitar errores con IPFS
+    />
+  );
 };
