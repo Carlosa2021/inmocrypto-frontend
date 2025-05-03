@@ -1,11 +1,8 @@
 'use client';
-
+import { NFTProvider, NFTMedia, NFTName, NFTDescription } from 'thirdweb/react';
 import { useRouter } from 'next/navigation';
-import { Card, CardContent } from '@/components/ui/card';
-import { IPFSNFTMedia } from './IPFSNFTMedia';
-import { getNFT } from 'thirdweb/extensions/erc721';
+import { CardContent } from '@/components/ui/card';
 import type { ThirdwebContract } from 'thirdweb';
-import { useEffect, useState } from 'react';
 
 export interface NFTCardProps {
   listingId: number;
@@ -21,57 +18,37 @@ export const NFTCard = ({
   price,
 }: NFTCardProps) => {
   const router = useRouter();
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-
   const handleClick = () => {
     router.push(`/marketplace/detalles_propiedad/${listingId}`);
   };
 
-  useEffect(() => {
-    const fetchMetadata = async () => {
-      try {
-        const nft = await getNFT({ contract, tokenId: BigInt(tokenId) });
-        setName(nft.metadata?.name || 'Sin nombre');
-        setDescription(nft.metadata?.description || 'Sin descripción');
-      } catch (err) {
-        console.error('Error al cargar metadata del NFT', err);
-      }
-    };
-
-    fetchMetadata();
-  }, [contract, tokenId]);
-
   return (
     <div onClick={handleClick} className="cursor-pointer">
-      <Card className="transition-transform hover:scale-105 rounded-2xl shadow-lg overflow-hidden bg-white dark:bg-zinc-900">
+      <NFTProvider contract={contract} tokenId={BigInt(tokenId)}>
         <div className="w-full h-60 md:h-full">
-          <IPFSNFTMedia
-            contract={contract}
-            tokenId={tokenId}
+          <NFTMedia
             className="w-full h-full object-cover rounded-xl"
+            // NO pases mediaResolver si no haces override manual de la imagen.
+            // Thirdweb ya resuelve ipfs:// automáticamente usando sus gateways compatibles.
+            loadingComponent={<span>Cargando imagen...</span>}
+            fallbackComponent={<span>No se pudo cargar la imagen</span>}
           />
         </div>
-
         <CardContent className="p-4">
-          <p className="text-lg font-semibold mb-1 text-zinc-800 dark:text-zinc-100 truncate">
-            {name}
-          </p>
-          <p
+          <NFTName className="text-lg font-semibold mb-1 text-zinc-800 dark:text-zinc-100 truncate" />
+          <NFTDescription
             className="text-sm text-zinc-600 dark:text-zinc-300 line-clamp-2"
             style={{
               display: '-webkit-box',
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
             }}
-          >
-            {description}
-          </p>
+          />
           <p className="text-sm font-semibold mt-3 text-indigo-700 dark:text-indigo-300">
             Precio: {price}
           </p>
         </CardContent>
-      </Card>
+      </NFTProvider>
     </div>
   );
 };
