@@ -55,14 +55,7 @@ export default function MarketplacePage() {
             .<br />
             Seguridad blockchain, pago inmediato, propiedad digital.
           </p>
-          <div className="mt-8 flex flex-wrap gap-6 items-center justify-center">
-            <a
-              href="#marketplace"
-              className="px-8 py-3 rounded-full bg-indigo-600 hover:bg-pink-500 transition text-white font-bold shadow-md shadow-black/30 border border-indigo-200 focus:outline-none focus-visible:ring"
-            >
-              Ver propiedades
-            </a>
-          </div>
+          <div className="mt-8 flex flex-wrap gap-6 items-center justify-center"></div>
         </div>
       </section>
 
