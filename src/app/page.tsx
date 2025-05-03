@@ -19,7 +19,7 @@ export default function Home() {
       <section className="w-full flex justify-center mt-10 mb-14">
         <Link href="/marketplace">
           <button className="bg-indigo-600 text-white px-8 py-4 rounded-full hover:bg-indigo-700 transition text-lg font-semibold shadow-md">
-            Ver propiedades
+            Propiedades
           </button>
         </Link>
       </section>
