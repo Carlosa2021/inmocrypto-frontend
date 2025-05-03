@@ -65,7 +65,7 @@ export default function MarketplacePage() {
         className="max-w-7xl mx-auto mt-20 px-4 py-10 bg-white dark:bg-zinc-900 shadow-xl rounded-3xl flex-1"
       >
         <h2 className="text-3xl font-bold mb-8 text-center text-zinc-800 dark:text-white">
-          Propiedades en venta
+          Propiedades en Venta
         </h2>
 
         {loading ? (
