@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { NFTProvider, NFTMedia, NFTName, NFTDescription } from 'thirdweb/react';
 import { Card } from '@/components/ui/card';
 import type { ThirdwebContract } from 'thirdweb';
+import Image from 'next/image';
 
 export interface NFTCardProps {
   listingId: number;
@@ -45,7 +46,7 @@ export const NFTCard = ({
               className="w-full h-full object-cover rounded-xl"
               fallbackComponent={
                 imageUrl ? (
-                  <img
+                  <Image
                     src={imageUrl}
                     alt={name || 'NFT'}
                     className="w-full h-full object-cover rounded-xl"
