@@ -22,6 +22,8 @@ export const IPFSNFTMedia = ({ contract, tokenId, className = '' }: Props) => {
 
   useEffect(() => {
     const fetchMetadata = async () => {
+      if (!contract) return;
+
       try {
         const nft = await getNFT({ contract, tokenId: BigInt(tokenId) });
         const image = nft.metadata?.image || '';
@@ -36,7 +38,11 @@ export const IPFSNFTMedia = ({ contract, tokenId, className = '' }: Props) => {
   }, [contract, tokenId]);
 
   if (!ipfsUrl) {
-    return <p className="text-sm text-red-500">No se pudo cargar la imagen</p>;
+    return (
+      <p className="text-sm text-red-500 text-center">
+        No se pudo cargar la imagen
+      </p>
+    );
   }
 
   return <MediaRenderer client={client} src={ipfsUrl} className={className} />;
