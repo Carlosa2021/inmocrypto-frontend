@@ -47,7 +47,7 @@ export const NFTCard = ({
               fallbackComponent={
                 imageUrl ? (
                   <Image
-                    src={imageUrl}
+                    src="ipfs://QmPj6kAtrmwdGnrjqbgp9nkskurQ7QEGMEkeuhGfVTy1f9/ibiza.webp"
                     alt={name || 'NFT'}
                     className="w-full h-full object-cover rounded-xl"
                   />
