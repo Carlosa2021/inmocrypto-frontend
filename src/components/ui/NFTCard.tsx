@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { NFTProvider, NFTMedia, NFTName, NFTDescription } from 'thirdweb/react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import type { ThirdwebContract } from 'thirdweb';
 
 export interface NFTCardProps {
@@ -10,6 +10,9 @@ export interface NFTCardProps {
   tokenId: number;
   contract: ThirdwebContract;
   price: string;
+  image?: string;
+  name?: string;
+  description?: string;
 }
 
 export const NFTCard = ({
@@ -17,24 +20,55 @@ export const NFTCard = ({
   tokenId,
   contract,
   price,
+  image,
+  name,
+  description,
 }: NFTCardProps) => {
   const router = useRouter();
-
-  const handleClick = () => {
-    router.push(`/marketplace/detalles_propiedad/${listingId}`);
-  };
-
+  // Prepara src normalizado solo si tienes la propiedad image
+  const imageUrl =
+    image && image.startsWith('ipfs://')
+      ? image.replace('ipfs://', 'https://ipfs.io/ipfs/')
+      : image;
   return (
-    <div onClick={handleClick} className="cursor-pointer">
+    <div
+      onClick={() =>
+        router.push(`/marketplace/detalles_propiedad/${listingId}`)
+      }
+      className="cursor-pointer"
+    >
       <NFTProvider contract={contract} tokenId={BigInt(tokenId)}>
         <Card className="transition-transform hover:scale-105 rounded-2xl shadow-lg overflow-hidden bg-white dark:bg-zinc-900">
-          {/* Imagen con redondeo funcional */}
-          <div className="w-full h-60 md:h-full ">
-            <NFTMedia className="w-full h-full object-cover rounded-xl" />
+          {/* Imagen con fallback seguro */}
+          <div className="w-full h-60 md:h-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-900">
+            <NFTMedia
+              className="w-full h-full object-cover rounded-xl"
+              fallbackComponent={
+                imageUrl ? (
+                  <img
+                    src={imageUrl}
+                    alt={name || 'NFT'}
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-xs text-red-400">
+                    Sin imagen
+                  </div>
+                )
+              }
+            />
           </div>
-
-          <CardContent className="p-4">
-            <NFTName className="text-lg font-semibold mb-1 text-zinc-800 dark:text-zinc-100 truncate" />
+          <div className="p-4">
+            <NFTName
+              className="text-lg font-semibold mb-1 text-zinc-800 dark:text-zinc-100 truncate"
+              fallbackComponent={
+                name ? (
+                  <span>{name}</span>
+                ) : (
+                  <span className="text-red-400">Sin nombre</span>
+                )
+              }
+            />
             <NFTDescription
               className="text-sm text-zinc-600 dark:text-zinc-300 line-clamp-2"
               style={{
@@ -42,11 +76,18 @@ export const NFTCard = ({
                 WebkitBoxOrient: 'vertical',
                 overflow: 'hidden',
               }}
+              fallbackComponent={
+                description ? (
+                  <span>{description}</span>
+                ) : (
+                  <span className="text-red-400">Sin descripción</span>
+                )
+              }
             />
             <p className="text-sm font-semibold mt-3 text-indigo-700 dark:text-indigo-300">
               Precio: {price}
             </p>
-          </CardContent>
+          </div>
         </Card>
       </NFTProvider>
     </div>
