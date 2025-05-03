@@ -22,8 +22,9 @@ export const IPFSNFTMedia = ({ contract, tokenId, className = '' }: Props) => {
         const ipfsImage = nft.metadata?.image || '';
         const resolvedUrl = ipfsImage.replace(
           'ipfs://',
-          'https://ipfs.io/ipfs/',
+          'https://ipfscdn.io/ipfs/',
         );
+
         setImageUrl(resolvedUrl);
       } catch (err) {
         console.error('Error al cargar metadata del NFT', err);
