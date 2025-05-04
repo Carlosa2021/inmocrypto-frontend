@@ -1,8 +1,9 @@
 'use client';
-import { NFTProvider, NFTMedia, NFTName, NFTDescription } from 'thirdweb/react';
+import { NFTProvider, NFTName, NFTDescription } from 'thirdweb/react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import type { ThirdwebContract } from 'thirdweb';
+import { IPFSNFTMedia } from './IPFSNFTMedia';
 
 export interface NFTCardProps {
   listingId: number;
@@ -28,11 +29,12 @@ export const NFTCard = ({
         <div className="w-full h-60 md:h-full">
           {/* NFTProvider da contexto de metadatos, imagen y loading/fallback UI por defecto! */}
           <NFTProvider contract={contract} tokenId={BigInt(tokenId)}>
-            <NFTMedia
+            <IPFSNFTMedia
+              contract={contract}
+              tokenId={tokenId}
               className="w-full h-full object-cover rounded-xl"
-              loadingComponent={<span>Cargando imagen...</span>}
-              fallbackComponent={<span>No se pudo cargar la imagen</span>}
             />
+
             <CardContent className="p-4">
               <NFTName className="text-lg font-semibold mb-1 text-zinc-800 dark:text-zinc-100 truncate" />
               <NFTDescription
