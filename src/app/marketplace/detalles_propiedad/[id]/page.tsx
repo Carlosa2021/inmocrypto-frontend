@@ -144,7 +144,7 @@ export default function PropertyPage() {
 
             {/* Botón */}
             <BuyDirectListingButton
-              contractAddress="0x3fD5B4F1058416ea6BEeAc7dd3b239DD014a07a6"
+              contractAddress="0x35108cf18a2b1058036b95cb6B2A4257022ABD2e"
               listingId={detailListingId!}
               quantity={1n}
               client={client}

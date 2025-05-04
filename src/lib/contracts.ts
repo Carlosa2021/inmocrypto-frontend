@@ -4,12 +4,12 @@ import { client } from './thirdweb/client-browser';
 
 export const nftCollectionContract = getContract({
   client,
-  address: '0x3e45860ee64AFbE1E2251691C1494F1984544aF5', // NFT Collection
+  address: '0xEEF1cCD3409d3898B603E524dE7E2Bb8AF94789F', // NFT Collection
   chain: polygon,
 });
 
 export const marketplaceContract = getContract({
   client,
-  address: '0x3fD5B4F1058416ea6BEeAc7dd3b239DD014a07a6', // Marketplace V3
+  address: '0x35108cf18a2b1058036b95cb6B2A4257022ABD2e', // Marketplace V3
   chain: polygon,
 });
