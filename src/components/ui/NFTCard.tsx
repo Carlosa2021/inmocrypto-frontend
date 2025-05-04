@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { MediaRenderer } from 'thirdweb/react';
 import { getNFT } from 'thirdweb/extensions/erc721';
