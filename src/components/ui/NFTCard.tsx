@@ -20,7 +20,13 @@ export const NFTCard = ({
   price,
 }: NFTCardProps) => {
   const router = useRouter();
-  const [nft, setNFT] = useState<any | null>(null);
+  const [nft, setNFT] = useState<{
+    metadata?: {
+      name?: string;
+      description?: string;
+      image?: string;
+    };
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
