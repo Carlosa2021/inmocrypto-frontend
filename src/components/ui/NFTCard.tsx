@@ -1,4 +1,3 @@
-'use client';
 import React, { useState, useEffect } from 'react';
 import { MediaRenderer } from 'thirdweb/react';
 import { getNFT } from 'thirdweb/extensions/erc721';
@@ -21,29 +20,13 @@ export const NFTCard = ({
   price,
 }: NFTCardProps) => {
   const router = useRouter();
-  const [metadata, setMetadata] = useState<null | {
-    name?: string;
-    description?: string;
-    image?: string;
-  }>(null);
+  const [nft, setNFT] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const resolveIPFS = (url?: string) =>
-    url?.startsWith('ipfs://')
-      ? url.replace('ipfs://', 'https://ipfs.io/ipfs/')
-      : url;
 
   useEffect(() => {
     setLoading(true);
     getNFT({ contract, tokenId: BigInt(tokenId) })
-      .then((nft) => {
-        setMetadata({
-          name: nft?.metadata?.name ?? 'Sin nombre',
-          description: nft?.metadata?.description ?? 'Sin descripción',
-          image: resolveIPFS(nft?.metadata?.image),
-        });
-      })
-      .catch(() => setMetadata(null))
+      .then(setNFT)
       .finally(() => setLoading(false));
   }, [contract, tokenId]);
 
@@ -51,16 +34,21 @@ export const NFTCard = ({
     router.push(`/marketplace/detalles_propiedad/${listingId}`);
   };
 
+  const resolveIPFS = (url?: string) =>
+    url?.startsWith('ipfs://')
+      ? url.replace('ipfs://', 'https://ipfs.io/ipfs/')
+      : url;
+
   return (
     <div onClick={handleClick} className="cursor-pointer">
       <Card className="transition-transform hover:scale-105 rounded-2xl shadow-lg overflow-hidden bg-white dark:bg-zinc-900">
         <div className="w-full h-60 md:h-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">
           {loading ? (
             <span>Cargando imagen...</span>
-          ) : metadata?.image ? (
+          ) : nft?.metadata?.image ? (
             <MediaRenderer
               client={client}
-              src={metadata.image}
+              src={resolveIPFS(nft.metadata.image)}
               className="w-full h-full object-cover rounded-xl"
             />
           ) : (
@@ -71,7 +59,9 @@ export const NFTCard = ({
         </div>
         <CardContent className="p-4">
           <p className="text-lg font-semibold mb-1 text-zinc-800 dark:text-zinc-100 truncate">
-            {loading ? 'Cargando nombre...' : metadata?.name ?? 'Sin nombre'}
+            {loading
+              ? 'Cargando nombre...'
+              : nft?.metadata?.name ?? 'Sin nombre'}
           </p>
           <p
             className="text-sm text-zinc-600 dark:text-zinc-300 line-clamp-2"
@@ -83,7 +73,7 @@ export const NFTCard = ({
           >
             {loading
               ? 'Cargando descripción...'
-              : metadata?.description ?? 'Sin descripción'}
+              : nft?.metadata?.description ?? 'Sin descripción'}
           </p>
           <p className="text-sm font-semibold mt-3 text-indigo-700 dark:text-indigo-300">
             Precio: {price}
