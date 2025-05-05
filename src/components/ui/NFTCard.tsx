@@ -8,6 +8,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
 import { client } from '@/lib/thirdweb/client-browser';
 
+console.log(
+  'NFTCard > THIRDWEB_CLIENT_ID:',
+  process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID,
+);
+console.log('NFTCard > client?.clientId:', client?.clientId);
+
 export interface NFTCardProps {
   listingId: number;
   tokenId: number;
