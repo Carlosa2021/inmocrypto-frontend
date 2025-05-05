@@ -37,7 +37,7 @@ export default function MarketplacePage() {
           <Image
             src="https://ipfs.io/ipfs/QmXbLGHKb4KYYq2Tzz3AYnt2ZfuAg3ykqfsPco7JriwKBN"
             alt="Banner inversión web3"
-            width={1500} // elige el tamaño real de tu banner
+            width={1700} // elige el tamaño real de tu banner
             height={400} // el alto real deseado
             className="w-full h-full object-cover opacity-70 blur-sm scale-105"
           />
