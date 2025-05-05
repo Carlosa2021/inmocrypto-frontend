@@ -1,21 +1,13 @@
 'use client';
 import React from 'react';
 import { NFTProvider, NFTMedia, NFTName, NFTDescription } from 'thirdweb/react';
+import { useDirectListings } from '@/lib/thirdweb/hooks/useListings';
 import { Card, CardContent } from '@/components/ui/card';
 import { nftCollectionContract } from '@/lib/contracts';
-import type { DirectListing } from 'thirdweb/extensions/marketplace';
 
-interface PropertyListProps {
-  listings: DirectListing[] | undefined;
-  isLoading: boolean;
-  error: Error | null;
-}
+export default function PropertyList() {
+  const { listings, isLoading, error } = useDirectListings();
 
-export default function PropertyList({
-  listings,
-  isLoading,
-  error,
-}: PropertyListProps) {
   if (isLoading)
     return <p className="py-12 text-center text-lg">Cargando propiedades...</p>;
   if (error)
@@ -53,7 +45,7 @@ export default function PropertyList({
                   {listing.currencyValuePerToken?.symbol}
                 </span>
               </p>
-              {/* Aquí puedes agregar botones extra: Comprar, Detalles, etc. */}
+              {/* Botones extra aquí... */}
             </CardContent>
           </Card>
         </NFTProvider>

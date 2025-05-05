@@ -142,21 +142,28 @@ export default function PropertyPage() {
               )}
             </div>
 
-            {/* Botón */}
-            <BuyDirectListingButton
-              contractAddress="0x35108cf18a2b1058036b95cb6B2A4257022ABD2e"
-              listingId={detailListingId!}
-              quantity={1n}
-              client={client}
-              chain={polygon}
-              onTransactionConfirmed={() =>
-                alert('¡Compra realizada con éxito!')
-              }
-              onError={(err) => alert('Error en la compra: ' + err.message)}
-              className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition"
-            >
-              Comprar
-            </BuyDirectListingButton>
+            {/* Botón de compra solo si el listing está activo */}
+            {validListing && listingRaw.status === 1 ? (
+              <BuyDirectListingButton
+                contractAddress="0x35108cf18a2b1058036b95cb6B2A4257022ABD2e"
+                listingId={detailListingId!}
+                quantity={1n}
+                client={client}
+                chain={polygon}
+                onTransactionConfirmed={() =>
+                  alert('¡Compra realizada con éxito!')
+                }
+                onError={(err) => alert('Error en la compra: ' + err.message)}
+                className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition"
+              >
+                Comprar
+              </BuyDirectListingButton>
+            ) : (
+              <p className="text-lg text-gray-400 mt-4 font-semibold">
+                Propiedad no disponible para comprar. Si el propietario la
+                vuelve a listar, aparecerá aquí.
+              </p>
+            )}
           </div>
         </div>
       </NFTProvider>
