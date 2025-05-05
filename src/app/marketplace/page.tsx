@@ -1,33 +1,22 @@
 'use client';
-
-import { useEffect, useState } from 'react';
-import { getAllListings } from 'thirdweb/extensions/marketplace';
-import { marketplaceContract, nftCollectionContract } from '@/lib/contracts';
-import { NFTCard } from '@/components/ui/NFTCard';
-import type { DirectListing } from 'thirdweb/extensions/marketplace';
+import { useReadContract } from 'thirdweb/react';
+import { getAllValidListings } from 'thirdweb/extensions/marketplace';
+import { marketplaceContract } from '@/lib/contracts';
+import PropertyList from '@/components/properties/PropertyList';
 import Image from 'next/image';
+import type { DirectListing } from 'thirdweb/extensions/marketplace';
 
 export default function MarketplacePage() {
-  const [listings, setListings] = useState<DirectListing[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadListings = async () => {
-      try {
-        const data = await getAllListings({
-          contract: marketplaceContract,
-          start: 0,
-          count: 20n,
-        });
-        setListings(data as DirectListing[]);
-      } catch (err) {
-        console.error('Error fetching listings:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadListings();
-  }, []);
+  // Usa parámetros bigint para start y count
+  const {
+    data: listings,
+    isLoading,
+    error,
+  } = useReadContract(getAllValidListings, {
+    contract: marketplaceContract,
+    start: 0, // bigint!
+    count: 24n, // bigint!
+  });
 
   return (
     <div className="flex flex-col bg-background text-foreground">
@@ -37,8 +26,8 @@ export default function MarketplacePage() {
           <Image
             src="https://ipfs.io/ipfs/QmXbLGHKb4KYYq2Tzz3AYnt2ZfuAg3ykqfsPco7JriwKBN"
             alt="Banner inversión web3"
-            width={1700} // elige el tamaño real de tu banner
-            height={400} // el alto real deseado
+            width={1700}
+            height={400}
             className="w-full h-full object-cover opacity-70 blur-sm scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-tr from-blue-900/70 via-purple-900/60 to-indigo-800/90 mix-blend-multiply" />
@@ -67,22 +56,13 @@ export default function MarketplacePage() {
         <h2 className="text-3xl font-bold mb-8 text-center text-zinc-800 dark:text-white">
           Marketplace Propiedades Web3
         </h2>
-
-        {loading ? (
-          <p className="text-center text-gray-500">Cargando listados...</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {listings.map((listing) => (
-              <NFTCard
-                key={listing.id.toString()}
-                listingId={Number(listing.id)}
-                tokenId={Number(listing.tokenId)}
-                contract={nftCollectionContract}
-                price={`${listing.currencyValuePerToken.displayValue} ${listing.currencyValuePerToken.symbol}`}
-              />
-            ))}
-          </div>
-        )}
+        {/* Pasa props a PropertyList */}
+        <PropertyList
+          listings={listings as DirectListing[] | undefined}
+          isLoading={isLoading}
+          error={error}
+        />
+        ;
       </section>
     </div>
   );

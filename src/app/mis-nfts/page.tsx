@@ -44,7 +44,7 @@ export default function MisNFTsPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4">Mis NFTs</h1>
+      <h1 className="text-3xl font-bold mb-4">Mis Inmuebless</h1>
       {loading ? (
         <div className="text-lg mt-12 text-gray-500">Cargando tus NFTs...</div>
       ) : nfts.length === 0 ? (

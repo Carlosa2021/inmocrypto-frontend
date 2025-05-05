@@ -32,7 +32,7 @@ export function Navbar() {
             className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             href="/mis-nfts"
           >
-            Mis NFTs
+            Mis Inmuebles
           </Link>
           <Link
             className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
@@ -73,7 +73,7 @@ export function Navbar() {
           className="hover:text-indigo-600 dark:hover:text-indigo-400 px-2"
           href="/mis-nfts"
         >
-          Mis NFTs
+          Mis Inmuebles
         </Link>
         <Link
           className="hover:text-indigo-600 dark:hover:text-indigo-400 px-2"
