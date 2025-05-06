@@ -7,8 +7,8 @@ import type { DirectListing } from 'thirdweb/extensions/marketplace';
 
 export default function MarketplacePage() {
   const [listings, setListings] = useState<DirectListing[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [search, setSearch] = useState<string>('');
   const [sort, setSort] = useState<'recent' | 'low-high' | 'high-low'>(
     'recent',
   );
@@ -19,7 +19,7 @@ export default function MarketplacePage() {
         const data = await getAllListings({
           contract: marketplaceContract,
           start: 0,
-          count: 50n, // puedes aumentar según tu necesidad
+          count: 50n, // puedes ajustar según la necesidad
         });
         setListings(data as DirectListing[]);
       } catch (err) {
@@ -31,14 +31,16 @@ export default function MarketplacePage() {
     loadListings();
   }, []);
 
-  // Filtrar y ordenar en el frontend
+  // Filtrado seguro y ordenamiento
   const filteredListings = listings
     .filter(
       (l) =>
-        l.asset.metadata.name.toLowerCase().includes(search.toLowerCase()) ||
-        l.asset.metadata.description
-          .toLowerCase()
-          .includes(search.toLowerCase()),
+        (l.asset?.metadata?.name?.toLowerCase() ?? '').includes(
+          search.toLowerCase(),
+        ) ||
+        (l.asset?.metadata?.description?.toLowerCase() ?? '').includes(
+          search.toLowerCase(),
+        ),
     )
     .sort((a, b) => {
       if (sort === 'low-high') {
@@ -74,7 +76,9 @@ export default function MarketplacePage() {
         />
         <select
           value={sort}
-          onChange={(e) => setSort(e.target.value as any)}
+          onChange={(e) =>
+            setSort(e.target.value as 'recent' | 'low-high' | 'high-low')
+          }
           className="border rounded-full px-5 py-3 text-lg"
         >
           <option value="recent">Agregados recientemente</option>
@@ -84,7 +88,7 @@ export default function MarketplacePage() {
       </section>
 
       <section id="listings" className="max-w-7xl mx-auto mt-8 px-4 py-10 ...">
-        <h2 className="text-3xl font-bold mb-8 text-center">
+        <h2 className="text-3xl font-bold mb-12 text-center">
           Marketplace Inmobiliario Web3
         </h2>
         {loading ? (

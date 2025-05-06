@@ -55,7 +55,7 @@ export default function Home() {
             Pagos flexibles
           </h3>
           <p className="text-gray-500">
-            Acepta stablecoins, $POLYGON y más. Cobros y pagos directos, sin
+            Acepta stablecoins, $ , POLYGON y más. Cobros y pagos directos, sin
             comisiones ocultas.
           </p>
         </div>
