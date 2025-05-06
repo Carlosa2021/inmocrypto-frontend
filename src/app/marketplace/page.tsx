@@ -1,15 +1,17 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { getAllListings } from 'thirdweb/extensions/marketplace';
 import { marketplaceContract, nftCollectionContract } from '@/lib/contracts';
 import { NFTCard } from '@/components/ui/NFTCard';
 import type { DirectListing } from 'thirdweb/extensions/marketplace';
-import Image from 'next/image';
 
 export default function MarketplacePage() {
   const [listings, setListings] = useState<DirectListing[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [sort, setSort] = useState<'recent' | 'low-high' | 'high-low'>(
+    'recent',
+  );
 
   useEffect(() => {
     const loadListings = async () => {
@@ -17,7 +19,7 @@ export default function MarketplacePage() {
         const data = await getAllListings({
           contract: marketplaceContract,
           start: 0,
-          count: 20n,
+          count: 50n, // puedes aumentar según tu necesidad
         });
         setListings(data as DirectListing[]);
       } catch (err) {
@@ -29,50 +31,67 @@ export default function MarketplacePage() {
     loadListings();
   }, []);
 
+  // Filtrar y ordenar en el frontend
+  const filteredListings = listings
+    .filter(
+      (l) =>
+        l.asset.metadata.name.toLowerCase().includes(search.toLowerCase()) ||
+        l.asset.metadata.description
+          .toLowerCase()
+          .includes(search.toLowerCase()),
+    )
+    .sort((a, b) => {
+      if (sort === 'low-high') {
+        return (
+          Number(a.currencyValuePerToken.value) -
+          Number(b.currencyValuePerToken.value)
+        );
+      } else if (sort === 'high-low') {
+        return (
+          Number(b.currencyValuePerToken.value) -
+          Number(a.currencyValuePerToken.value)
+        );
+      }
+      // 'recent' (default): por fecha de inicio, descendente
+      return Number(b.startTimeInSeconds) - Number(a.startTimeInSeconds);
+    });
+
   return (
     <div className="flex flex-col bg-background text-foreground">
       {/* Banner Hero */}
-      <section className="relative overflow-hidden min-h-[380px] md:min-h-[420px] px-4 sm:px-10 py-16 flex flex-col justify-center items-center bg-gradient-to-br from-blue-800 via-indigo-700 to-purple-700 text-white shadow-xl rounded-3xl">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://ipfs.io/ipfs/QmXbLGHKb4KYYq2Tzz3AYnt2ZfuAg3ykqfsPco7JriwKBN"
-            alt="Banner inversión web3"
-            width={1700} // elige el tamaño real de tu banner
-            height={400} // el alto real deseado
-            className="w-full h-full object-cover opacity-70 blur-sm scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-tr from-blue-900/70 via-purple-900/60 to-indigo-800/90 mix-blend-multiply" />
-        </div>
-        <div className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center">
-          <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-yellow-400 via-pink-300 to-indigo-400 bg-clip-text text-transparent drop-shadow-lg text-center">
-            Invierte en inmuebles reales con Web3
-          </h1>
-          <p className="mt-6 text-lg md:text-2xl font-medium drop-shadow-md text-white/90 text-center">
-            Compra tu nueva casa con criptomonedas y{' '}
-            <span className="font-bold text-emerald-300">
-              recibe en euros automáticamente
-            </span>
-            .<br />
-            Seguridad blockchain, pago inmediato, propiedad digital.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-6 items-center justify-center"></div>
-        </div>
+      <section className="relative ...">
+        {/* ... mismo que ya tienes ... */}
       </section>
 
-      {/* Sección de propiedades en venta */}
-      <section
-        id="listings"
-        className="max-w-7xl mx-auto mt-20 px-4 py-10 bg-white dark:bg-zinc-900 shadow-xl rounded-3xl flex-1"
-      >
-        <h2 className="text-3xl font-bold mb-8 text-center text-zinc-800 dark:text-white">
+      {/* Búsqueda y filtros */}
+      <section className="max-w-7xl mx-auto mt-10 px-4 flex flex-col md:flex-row items-center gap-6">
+        <input
+          type="text"
+          value={search}
+          placeholder="Buscar NFT por nombre o descripción"
+          onChange={(e) => setSearch(e.target.value)}
+          className="border rounded-full px-5 py-3 text-lg w-full md:w-96"
+        />
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as any)}
+          className="border rounded-full px-5 py-3 text-lg"
+        >
+          <option value="recent">Agregados recientemente</option>
+          <option value="low-high">Precio: de menor a mayor</option>
+          <option value="high-low">Precio: de mayor a menor</option>
+        </select>
+      </section>
+
+      <section id="listings" className="max-w-7xl mx-auto mt-8 px-4 py-10 ...">
+        <h2 className="text-3xl font-bold mb-8 text-center">
           Marketplace Inmobiliario Web3
         </h2>
-
         {loading ? (
           <p className="text-center text-gray-500">Cargando listados...</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {listings.map((listing) => (
+            {filteredListings.map((listing) => (
               <NFTCard
                 key={listing.id.toString()}
                 listingId={Number(listing.id)}
