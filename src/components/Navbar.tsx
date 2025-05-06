@@ -26,7 +26,7 @@ export function Navbar() {
             className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             href="/marketplace"
           >
-            Marketplace
+            Explorar
           </Link>
           <Link
             className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
@@ -67,7 +67,7 @@ export function Navbar() {
           className="hover:text-indigo-600 dark:hover:text-indigo-400 px-2"
           href="/marketplace"
         >
-          Marketplace
+          Explorar
         </Link>
         <Link
           className="hover:text-indigo-600 dark:hover:text-indigo-400 px-2"
