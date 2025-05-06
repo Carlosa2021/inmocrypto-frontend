@@ -88,9 +88,7 @@ export default function MarketplacePage() {
       </section>
 
       <section id="listings" className="max-w-7xl mx-auto mt-8 px-4 py-10 ...">
-        <h2 className="text-3xl font-bold mb-12 text-center">
-          Marketplace Inmobiliario Web3
-        </h2>
+        <h2 className="text-3xl font-bold mb-14 text-center">Inmuebles Web3</h2>
         {loading ? (
           <p className="text-center text-gray-500">Cargando listados...</p>
         ) : (
