@@ -14,34 +14,23 @@ import { prepareContractCall } from 'thirdweb';
 import { nftCollectionContract, marketplaceContract } from '@/lib/contracts';
 import { Button } from '@/components/ui/button';
 import type { DirectListing } from 'thirdweb/extensions/marketplace';
-import { useMemo } from 'react';
 
 export default function PropertyPage() {
-  const params = useParams();
-  const idParam = params?.id;
-
-  const id = useMemo(() => {
-    try {
-      return typeof idParam === 'string' ? BigInt(idParam) : undefined;
-    } catch {
-      return undefined;
-    }
-  }, [idParam]);
-
+  const { id } = useParams();
   const account = useActiveAccount();
 
   const { data: listingRaw, isLoading } = useReadContract({
     contract: marketplaceContract,
     method: 'getListing',
-    params: id ? [id] : [],
+    params: [BigInt(id)],
   });
 
   const { mutate: buyNow, isPending: isBuying } = useSendTransaction();
 
   if (isLoading) return <p>Cargando propiedad...</p>;
-  if (!listingRaw || !id) return <p>Propiedad no encontrada.</p>;
+  if (!listingRaw) return <p>Propiedad no encontrada.</p>;
 
-  const listing = listingRaw as unknown as DirectListing;
+  const listing = listingRaw as DirectListing;
 
   return (
     <div className="max-w-4xl mx-auto p-8">
@@ -67,16 +56,14 @@ export default function PropertyPage() {
               onClick={() => {
                 const transaction = prepareContractCall({
                   contract: marketplaceContract,
-                  method:
-                    'function buyFromListing(uint256 listingId, uint256 quantityToBuy, address recipient)',
-                  params: [BigInt(listing.id), 1n, account?.address || ''],
+                  method: 'buyFromListing',
+                  params: [BigInt(listing.id), 1, account?.address || ''],
                 });
                 buyNow(transaction);
               }}
             >
               {isBuying ? 'Comprando...' : 'Comprar'}
             </Button>
-            ;
           </div>
         </div>
       </NFTProvider>
