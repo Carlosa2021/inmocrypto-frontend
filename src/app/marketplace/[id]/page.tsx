@@ -16,21 +16,33 @@ import { Button } from '@/components/ui/button';
 import type { DirectListing } from 'thirdweb/extensions/marketplace';
 
 export default function PropertyPage() {
-  const { id } = useParams();
-  const account = useActiveAccount();
+  // Siempre obtén el id pero nunca coloques hooks en condicional
+  const params = useParams();
+  const idParam = params?.id;
 
+  // Convierte id para soportar string o string[]
+  const id =
+    typeof idParam === 'string'
+      ? idParam
+      : Array.isArray(idParam) && idParam.length > 0
+      ? idParam[0]
+      : undefined;
+
+  // Los hooks NO pueden ser condicionales: llama SIEMPRE
   const { data: listingRaw, isLoading } = useReadContract({
     contract: marketplaceContract,
     method: 'getListing',
-    params: [BigInt(id)],
+    params: id ? [BigInt(id)] : [0n], // nunca undefined!
   });
 
+  const account = useActiveAccount();
   const { mutate: buyNow, isPending: isBuying } = useSendTransaction();
 
+  // Renderiza según los datos obtenidos
   if (isLoading) return <p>Cargando propiedad...</p>;
-  if (!listingRaw) return <p>Propiedad no encontrada.</p>;
+  if (!listingRaw || !id || id === '0') return <p>Propiedad no encontrada.</p>;
 
-  const listing = listingRaw as DirectListing;
+  const listing = listingRaw as unknown as DirectListing;
 
   return (
     <div className="max-w-4xl mx-auto p-8">
@@ -56,8 +68,13 @@ export default function PropertyPage() {
               onClick={() => {
                 const transaction = prepareContractCall({
                   contract: marketplaceContract,
-                  method: 'buyFromListing',
-                  params: [BigInt(listing.id), 1, account?.address || ''],
+                  method:
+                    'function buyFromListing(uint256 listingId, uint256 quantityToBuy, address recipient)',
+                  params: [
+                    BigInt(listing.id),
+                    1n, // Siempre bigint!
+                    account?.address ?? '',
+                  ],
                 });
                 buyNow(transaction);
               }}
