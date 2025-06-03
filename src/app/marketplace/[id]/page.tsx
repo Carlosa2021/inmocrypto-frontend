@@ -15,9 +15,8 @@ import { nftCollectionContract, marketplaceContract } from '@/lib/contracts';
 import { Button } from '@/components/ui/button';
 import type { DirectListing } from 'thirdweb/extensions/marketplace';
 
-// NUNCA declares ni uses hooks en condicional, ni hagas BigInt(undefined).
 export default function PropertyPage() {
-  // Consigue id seguro
+  // 1. Obtener id seguro (string || undefined)
   const params = useParams();
   const idRaw = params?.id;
   const idString =
@@ -27,21 +26,20 @@ export default function PropertyPage() {
       ? idRaw[0]
       : undefined;
 
-  // No uses hooks en condicional: maneja 'idString' después.
+  // 2. Siempre un bigint VÁLIDO
+  const bigintId = idString ? BigInt(idString) : 0n;
   const { data: listingRaw, isLoading } = useReadContract({
     contract: marketplaceContract,
     method: 'getListing',
-    params: [idString ? BigInt(idString) : 0n], // 0n seguro si no hay id
+    params: [bigintId],
   });
+
   const account = useActiveAccount();
   const { mutate: buyNow, isPending: isBuying } = useSendTransaction();
 
-  // Renderiza sin errores: nunca pasarás undefined al hook ni a BigInt.
+  // 3. No hay propiedad válida si idString no existe, es "0" o viene sin resultado
   const notFound =
-    !idString ||
-    idString === '0' ||
-    !listingRaw ||
-    (idString && BigInt(idString) === 0n);
+    !idString || idString === '0' || !listingRaw || bigintId === 0n;
 
   if (isLoading) return <p>Cargando propiedad...</p>;
   if (notFound) return <p>Propiedad no encontrada.</p>;
