@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import type { DirectListing } from 'thirdweb/extensions/marketplace';
 
 export default function PropertyPage() {
-  // 1. Obtener el parámetro id seguro como string (por rutas Next.js puede llegar como array)
+  // 1. Obtener el parametro id seguro como string (por rutas Next.js puede llegar como array)
   const params = useParams();
   const idRaw = params?.id;
   const idString =
