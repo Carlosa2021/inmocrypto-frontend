@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import { getAllListings } from 'thirdweb/extensions/marketplace';
 import { marketplaceContract, nftCollectionContract } from '@/lib/contracts';

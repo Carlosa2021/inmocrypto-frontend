@@ -3,8 +3,8 @@
 import { useParams } from 'next/navigation';
 import {
   useReadContract,
-  useSendTransaction,
   useActiveAccount,
+  useSendTransaction,
   NFTProvider,
   NFTMedia,
   NFTName,
@@ -16,31 +16,35 @@ import { Button } from '@/components/ui/button';
 import type { DirectListing } from 'thirdweb/extensions/marketplace';
 
 export default function PropertyPage() {
-  // Siempre obtén el id pero nunca coloques hooks en condicional
+  // 1. Obtener el parámetro id seguro como string (por rutas Next.js puede llegar como array)
   const params = useParams();
-  const idParam = params?.id;
-
-  // Convierte id para soportar string o string[]
-  const id =
-    typeof idParam === 'string'
-      ? idParam
-      : Array.isArray(idParam) && idParam.length > 0
-      ? idParam[0]
+  const idRaw = params?.id;
+  const idString =
+    typeof idRaw === 'string'
+      ? idRaw
+      : Array.isArray(idRaw) && idRaw.length > 0
+      ? idRaw[0]
       : undefined;
 
-  // Los hooks NO pueden ser condicionales: llama SIEMPRE
+  // 2. Llama SIEMPRE a hooks y pasa params como array. Nunca undefined.
   const { data: listingRaw, isLoading } = useReadContract({
     contract: marketplaceContract,
     method: 'getListing',
-    params: id ? [BigInt(id)] : [0n], // nunca undefined!
+    params: [idString ? BigInt(idString) : 0n],
   });
 
   const account = useActiveAccount();
   const { mutate: buyNow, isPending: isBuying } = useSendTransaction();
 
-  // Renderiza según los datos obtenidos
+  // 3. Seguridad: Chequeos para no renderizar si no hay id o resultado.
+  const notFound =
+    !idString ||
+    idString === '0' ||
+    !listingRaw ||
+    (idString && BigInt(idString) === 0n);
+
   if (isLoading) return <p>Cargando propiedad...</p>;
-  if (!listingRaw || !id || id === '0') return <p>Propiedad no encontrada.</p>;
+  if (notFound) return <p>Propiedad no encontrada.</p>;
 
   const listing = listingRaw as unknown as DirectListing;
 
@@ -70,11 +74,7 @@ export default function PropertyPage() {
                   contract: marketplaceContract,
                   method:
                     'function buyFromListing(uint256 listingId, uint256 quantityToBuy, address recipient)',
-                  params: [
-                    BigInt(listing.id),
-                    1n, // Siempre bigint!
-                    account?.address ?? '',
-                  ],
+                  params: [BigInt(listing.id), 1n, account?.address ?? ''],
                 });
                 buyNow(transaction);
               }}
