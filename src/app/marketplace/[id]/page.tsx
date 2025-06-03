@@ -15,8 +15,9 @@ import { nftCollectionContract, marketplaceContract } from '@/lib/contracts';
 import { Button } from '@/components/ui/button';
 import type { DirectListing } from 'thirdweb/extensions/marketplace';
 
+// NUNCA declares ni uses hooks en condicional, ni hagas BigInt(undefined).
 export default function PropertyPage() {
-  // 1. Obtener el parametro id seguro como string (por rutas Next.js puede llegar como array)
+  // Consigue id seguro
   const params = useParams();
   const idRaw = params?.id;
   const idString =
@@ -26,17 +27,16 @@ export default function PropertyPage() {
       ? idRaw[0]
       : undefined;
 
-  // 2. Llama SIEMPRE a hooks y pasa params como array. Nunca undefined.
+  // No uses hooks en condicional: maneja 'idString' después.
   const { data: listingRaw, isLoading } = useReadContract({
     contract: marketplaceContract,
     method: 'getListing',
-    params: [idString ? BigInt(idString) : 0n],
+    params: [idString ? BigInt(idString) : 0n], // 0n seguro si no hay id
   });
-
   const account = useActiveAccount();
   const { mutate: buyNow, isPending: isBuying } = useSendTransaction();
 
-  // 3. Seguridad: Chequeos para no renderizar si no hay id o resultado.
+  // Renderiza sin errores: nunca pasarás undefined al hook ni a BigInt.
   const notFound =
     !idString ||
     idString === '0' ||
