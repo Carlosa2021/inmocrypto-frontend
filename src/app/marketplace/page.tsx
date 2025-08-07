@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { getAllListings } from 'thirdweb/extensions/marketplace';
-import { marketplaceContract, nftCollectionContract } from '@/lib/contracts';
+import {
+  marketplaceContract,
+  nftCollectionContract,
+  erc1155CollectionContract, // importa tu contrato 1155
+} from '@/lib/contracts';
 import { NFTCard } from '@/components/ui/NFTCard';
 import type { DirectListing } from 'thirdweb/extensions/marketplace';
 
@@ -20,7 +24,7 @@ export default function MarketplacePage() {
         const data = await getAllListings({
           contract: marketplaceContract,
           start: 0,
-          count: 50n, // puedes ajustar según la necesidad
+          count: 50n,
         });
         setListings(data as DirectListing[]);
       } catch (err) {
@@ -32,7 +36,24 @@ export default function MarketplacePage() {
     loadListings();
   }, []);
 
-  // Filtrado seguro y ordenamiento
+  // Detecta la colección a la que pertenece el NFT
+  function getCollectionContract(assetContractAddress: string) {
+    if (
+      assetContractAddress.toLowerCase() ===
+      nftCollectionContract.address.toLowerCase()
+    ) {
+      return nftCollectionContract;
+    }
+    if (
+      assetContractAddress.toLowerCase() ===
+      erc1155CollectionContract.address.toLowerCase()
+    ) {
+      return erc1155CollectionContract;
+    }
+    return null;
+  }
+
+  // Filtrado y ordenamiento exactamente igual
   const filteredListings = listings
     .filter(
       (l) =>
@@ -55,18 +76,13 @@ export default function MarketplacePage() {
           Number(a.currencyValuePerToken.value)
         );
       }
-      // 'recent' (default): por fecha de inicio, descendente
       return Number(b.startTimeInSeconds) - Number(a.startTimeInSeconds);
     });
 
   return (
     <div className="flex flex-col bg-background text-foreground">
-      {/* Banner Hero */}
-      <section className="relative ...">
-        {/* ... mismo que ya tienes ... */}
-      </section>
+      <section className="relative ...">{/* ... banner ... */}</section>
 
-      {/* Búsqueda y filtros */}
       <section className="max-w-7xl mx-auto mt-10 px-4 flex flex-col md:flex-row items-center gap-6">
         <input
           type="text"
@@ -94,15 +110,21 @@ export default function MarketplacePage() {
           <p className="text-center text-gray-500">Cargando listados...</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {filteredListings.map((listing) => (
-              <NFTCard
-                key={listing.id.toString()}
-                listingId={Number(listing.id)}
-                tokenId={Number(listing.tokenId)}
-                contract={nftCollectionContract}
-                price={`${listing.currencyValuePerToken.displayValue} ${listing.currencyValuePerToken.symbol}`}
-              />
-            ))}
+            {filteredListings.map((listing) => {
+              const contract = getCollectionContract(
+                listing.assetContractAddress,
+              );
+              if (!contract) return null;
+              return (
+                <NFTCard
+                  key={listing.id.toString()}
+                  listingId={Number(listing.id)}
+                  tokenId={Number(listing.tokenId)}
+                  contract={contract}
+                  price={`${listing.currencyValuePerToken.displayValue} ${listing.currencyValuePerToken.symbol}`}
+                />
+              );
+            })}
           </div>
         )}
       </section>

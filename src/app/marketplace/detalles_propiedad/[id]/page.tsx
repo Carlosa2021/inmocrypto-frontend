@@ -8,7 +8,11 @@ import {
   NFTName,
   NFTDescription,
 } from 'thirdweb/react';
-import { nftCollectionContract, marketplaceContract } from '@/lib/contracts';
+import {
+  nftCollectionContract,
+  erc1155CollectionContract,
+  marketplaceContract,
+} from '@/lib/contracts';
 import { useState, useEffect } from 'react';
 import { BuyDirectListingButton } from 'thirdweb/react';
 import { polygon } from 'thirdweb/chains';
@@ -22,6 +26,19 @@ interface NFTMetadata {
   ubicacion?: string;
   habitaciones?: string | number;
   superficie?: string | number;
+}
+
+// Utilidad para decidir el contrato según assetContract
+function getContractByAddress(address: string) {
+  if (address?.toLowerCase() === nftCollectionContract.address.toLowerCase()) {
+    return nftCollectionContract;
+  }
+  if (
+    address?.toLowerCase() === erc1155CollectionContract.address.toLowerCase()
+  ) {
+    return erc1155CollectionContract;
+  }
+  return null;
 }
 
 export default function PropertyPage() {
@@ -55,10 +72,20 @@ export default function PropertyPage() {
   const detailListingId = validListing
     ? (listingRaw.listingId as bigint)
     : undefined;
+  const assetContractAddress: string | undefined = validListing
+    ? String(listingRaw.assetContract)
+    : undefined;
+  const tokenType: number | undefined = validListing
+    ? Number(listingRaw.tokenType)
+    : undefined; // 0 = ERC-721, 1 = ERC-1155
 
-  // NO genéricos, el hook ya infiere (y forzamos comprobación en el efecto)
+  // Selecciona el contrato adecuado
+  const nftContract =
+    assetContractAddress && getContractByAddress(assetContractAddress);
+
+  // tokenURI para colección correspondiente
   const { data: tokenUriRaw } = useReadContract({
-    contract: nftCollectionContract,
+    contract: nftContract ?? nftCollectionContract,
     method: 'tokenURI',
     params: [tokenId ?? 0n] as [bigint],
   });
@@ -81,9 +108,19 @@ export default function PropertyPage() {
   if (isLoading) return <p>Cargando propiedad...</p>;
   if (!validListing) return <p>Propiedad no encontrada.</p>;
 
+  // Visual tipo de token
+  let tipoLabel = '';
+  if (typeof tokenType === 'number') {
+    if (tokenType === 0) tipoLabel = 'ERC-721';
+    else if (tokenType === 1) tipoLabel = 'ERC-1155';
+  }
+
   return (
     <div className="max-w-6xl mx-auto p-6 mt-10">
-      <NFTProvider contract={nftCollectionContract} tokenId={tokenId!}>
+      <NFTProvider
+        contract={nftContract ?? nftCollectionContract}
+        tokenId={tokenId!}
+      >
         <div className="grid md:grid-cols-2 gap-6 bg-white dark:bg-zinc-900 rounded-xl shadow-xl overflow-hidden">
           {/* Imagen */}
           <div className="w-full h-96 md:h-full">
@@ -95,6 +132,11 @@ export default function PropertyPage() {
             <div>
               <h1 className="text-3xl font-bold mb-3 text-zinc-900 dark:text-zinc-100">
                 <NFTName />
+                {tipoLabel && (
+                  <span className="ml-4 inline-block px-2 text-xs font-semibold rounded bg-indigo-100 text-indigo-700 dark:bg-indigo-800 dark:text-indigo-200">
+                    {tipoLabel}
+                  </span>
+                )}
               </h1>
               <p className="text-zinc-700 dark:text-zinc-300 mb-4">
                 <NFTDescription />
@@ -103,7 +145,11 @@ export default function PropertyPage() {
                 Precio: {pricePerToken ? Number(pricePerToken) / 1e18 : '--'}{' '}
                 POL
               </p>
-
+              {tokenType === 1 && validListing && (
+                <p className="text-purple-700 mb-4">
+                  Disponibles: <b>{String(listingRaw.quantity)}</b>
+                </p>
+              )}
               {metadata && (
                 <div className="space-y-1 text-sm text-zinc-800 dark:text-zinc-200 mb-6">
                   {metadata.ubicacion && (
@@ -141,11 +187,9 @@ export default function PropertyPage() {
                 </div>
               )}
             </div>
-
-            {/* Botón de compra solo si el listing está activo */}
             {validListing && listingRaw.status === 1 ? (
               <BuyDirectListingButton
-                contractAddress="0x35108cf18a2b1058036b95cb6B2A4257022ABD2e"
+                contractAddress={marketplaceContract.address}
                 listingId={detailListingId!}
                 quantity={1n}
                 client={client}
