@@ -1,7 +1,7 @@
 // src/app/api/nebula/route.ts
 import { NextResponse } from 'next/server';
 
-const NEBULA_URL = 'https://nebula-api.thirdweb.com/chat';
+const NEBULA_URL = 'https://api.thirdweb.com/ai/chat';
 const SECRET_KEY = process.env.THIRDWEB_SECRET_KEY;
 
 export async function POST(req: Request) {
